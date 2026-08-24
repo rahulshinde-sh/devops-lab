@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevOps Lab Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+    .header {
+      padding: 20px 40px;
+      background: #111827;
+      border-bottom: 1px solid #334155;
+    }
+    .header h1 { margin: 0; font-size: 24px; }
+    .status { color: #22c55e; font-size: 14px; margin-top: 6px; }
+    .container { padding: 40px; max-width: 1200px; margin: auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card h3 { margin-top: 0; color: #94a3b8; font-size: 14px; }
+    .value { font-size: 28px; font-weight: bold; }
+    .section { margin-top: 30px; }
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .grid { grid-template-columns: 1fr; }
+      .container { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <h1>DevOps Lab Dashboard</h1>
+  <div class="status">● Local Environment Online</div>
+</header>
+
+<main class="container">
+  <div class="grid">
+    <div class="card">
+      <h3>SERVER STATUS</h3>
+      <div class="value">ONLINE</div>
+    </div>
+    <div class="card">
+      <h3>CPU</h3>
+      <div class="value" id="cpu">--</div>
+    </div>
+    <div class="card">
+      <h3>MEMORY</h3>
+      <div class="value" id="memory">--</div>
+    </div>
+    <div class="card">
+      <h3>CONTAINERS</h3>
+      <div class="value" id="containers">--</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h3>ENVIRONMENT</h3>
+      <p><strong>Environment:</strong> <span id="environment">Loading...</span></p>
+      <p><strong>Backend:</strong> <span id="backend">Checking...</span></p>
+    </div>
+  </div>
+</main>
+
+<script>
+async function loadServerData() {
+  try {
+    const response = await fetch("http://localhost:4000/api/server");
+    const data = await response.json();
+
+    document.getElementById("cpu").textContent = data.cpu;
+    document.getElementById("memory").textContent = data.memory;
+    document.getElementById("containers").textContent = data.containers;
+    document.getElementById("environment").textContent = data.environment;
+    document.getElementById("backend").textContent = "Connected";
+  } catch (error) {
+    document.getElementById("backend").textContent = "Offline";
+  }
+}
+loadServerData();
+</script>
+</body>
+</html>

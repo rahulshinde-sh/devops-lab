@@ -1,0 +1,73 @@
+
+name: DevOps Lab CI
+
+
+
+on:
+
+  push:
+
+    branches:
+
+      - main
+
+  pull_request:
+
+    branches:
+
+      - main
+
+
+
+jobs:
+
+  validate:
+
+    name: Validate Application
+
+    runs-on: ubuntu-latest
+
+
+
+    steps:
+
+      - name: Checkout repository
+
+        uses: actions/checkout@v4
+
+
+
+      - name: Validate backend JavaScript
+
+        working-directory: backend
+
+        run: |
+
+          docker run --rm \
+
+            -v "$PWD":/app \
+
+            -w /app \
+
+            node:24-alpine \
+
+            node --check server.js
+
+
+
+      - name: Build backend image
+
+        run: docker build -t devops-lab-backend:test ./backend
+
+
+
+      - name: Build frontend image
+
+        run: docker build -t devops-lab-frontend:test ./frontend
+
+
+
+      - name: Validate Docker Compose
+
+        run: docker compose config
+
